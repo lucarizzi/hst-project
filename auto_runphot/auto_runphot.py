@@ -96,5 +96,5 @@ f.write('\n')
 
 #write end and close
 f.write('\n\nnice +19 ${DOLPHOT_DIR}/dolphot ${TARG}.phot -pcphot5.param\n')
-f.write('cat ${TARG}.phot | awk ''$5<=2.5 && $7*$7<=0.09 && $11<=2 && $20>=5 && $24==0 && $33>=5 && $37==0'' > ${TARG}.phot2)')
+f.write('cat ${TARG}.phot | awk ''$5<=2.5 && $7*$7<=0.09 && $11<=2 && $20>=5 && $24==0 && $33>=5 && $37==0'' > ${TARG}.phot2')
 f.close()
