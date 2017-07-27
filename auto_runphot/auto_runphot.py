@@ -8,15 +8,15 @@ directory='./raw/'
 
 #create list of flc files in directory
 files = fnmatch.filter(os.listdir(directory), '*flc.fits')
-print files
+print(files)
 
 #get number of flc files dealing with
 num = len(files)/2 #change later so it isn't just limited to 2 filters?
-print num
+#print(num)
 
 #find base name
 base_name = os.path.commonprefix(files)
-#print base_name
+#print(base_name)
 
 
 #below is to get filter information  
@@ -29,7 +29,7 @@ for fitsName in glob.glob('./raw/*flc.fits'):
 	filter_array.append(filters)
 	if 'CLEAR1L' in filter_array: filter_array.remove('CLEAR1L')
 	if 'CLEAR2L' in filter_array: filter_array.remove('CLEAR2L')
-	print filter_array
+	print(filter_array)
 	hdulist.close()
 
 #following manual bit is for purposes of doing it locally
@@ -43,7 +43,7 @@ for (i, item) in enumerate(filter_array_short):
         filter_array_short[i] = 'V'
     if item == 'F814W':
         filter_array_short[i] = 'I'
-print filter_array_short
+print(filter_array_short)
 
 
 #create text file
@@ -96,5 +96,5 @@ f.write('\n')
 
 #write end and close
 f.write('\n\nnice +19 ${DOLPHOT_DIR}/dolphot ${TARG}.phot -pcphot5.param\n')
-f.write('cat ${TARG}.phot | awk ''$5<=2.5 && $7*$7<=0.09 && $11<=2 && $20>=5 && $24==0 && $33>=5 && $37==0'' > ${TARG}.phot2')
+#f.write("cat ${TARG}.phot | awk ''$5<=2.5 && $7*$7<=0.09 && $11<=2 && $20>=5 && $24==0 && $33>=5 && $37==0'' > ${TARG}.phot2")
 f.close()
