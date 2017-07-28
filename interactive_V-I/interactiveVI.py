@@ -7,11 +7,11 @@ import matplotlib as mpl
 from scipy.stats import gaussian_kde
 from annotate import Annotate
 
-#prefix = input("What is the name of the galaxy?")
-#for now:
+prefix = input("What is the name of the galaxy?")
+#for easier inspection:
 #prefix='NGC5128-S1'
 #prefix='CENA-131952'
-prefix='CENA-132302'
+#prefix='CENA-132302'
 
 #real photometry first
 real_file = "%s.phot" % prefix
@@ -35,7 +35,7 @@ real_df['V-I'] = real_df['inst_vega_v']-real_df['inst_vega_I']
 
 #establish cuts from below line
 #$5<=2.5 && $7*$7<=0.09 && $11<=2 && $20>=5 && $24==0 && $33>=5 && $37==0'' > ${TARG}.phot2")
-real_cut = real_df[(real_df['chi'] < 2.5) & (real_df['sharp'] <= 0.09) & (real_df['type'] <= 2) 
+real_cut = real_df[(real_df['chi'] < 2.5) & (real_df['sharp']*real_df['sharp'] <= 0.09) & (real_df['type'] <= 2) 
         & (real_df['snr_v'] >= 5) & (real_df['flag_V'] == 0) & (real_df['snr_I'] >= 5) 
         & (real_df['flag_I'] == 0)]
 
