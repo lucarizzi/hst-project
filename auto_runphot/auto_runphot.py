@@ -1,8 +1,8 @@
-import os, shutil
+import os, shutil, sys
 import fnmatch
 import glob
 from astropy.io import fits
-
+import pandas as pd
 
 # determine where dolphot lives
 dolphotDir = "/".join(shutil.which('dolphot').split('/')[:-1])
@@ -13,51 +13,58 @@ if dolphotDir == "":
 #set directory for raw data
 directory='./raw/'
 
-#set BIN directory for dolphot code
-
 #create list of flc files in directory
-files = fnmatch.filter(os.listdir(directory), '*flc.fits')
-print(files)
-
-#get number of flc files dealing with
-num = len(files)/2 #change later so it isn't just limited to 2 filters?
-#print(num)
+files = [str(x) for x in fnmatch.filter(os.listdir(directory), '*flc.fits')]
 
 #find base name
 base_name = os.path.commonprefix(files)
-#print(base_name)
+if base_name == "":
+	sys.stdout.write("I could not find a common prefix\n")
+	sys.exit(1)
+else:
+	sys.stdout.write("The common prefix is %s\n" % (base_name))
 
+# create a pandas structure
+mainDirectory = pd.DataFrame(columns = ['file','filter'])
+mainDirectory['file'] = files
 
-#below is to get filter information  
-filter_array=[]
-for fitsName in glob.glob('./raw/*flc.fits'):
-	hdulist = fits.open(fitsName)
-	instrument = hdulist[0].header['INSTRUME']
-	if instrument == "WFC3":
-		filter = hdulist[0].header['FILTER']
-		filter_array.append(filter)
-	if instrument == "ACS":
-		filter = hdulist[0].header['FILTER1']
-		filter_array.append(filter)
-		filter = hdulist[0].header['FILTER2']
-		filter_array.append(filter)
-		if 'CLEAR1L' in filter_array: filter_array.remove('CLEAR1L')
-		if 'CLEAR2L' in filter_array: filter_array.remove('CLEAR2L')
-	print(filter_array)
-	hdulist.close()
+# use the file name as index
+mainDirectory = mainDirectory.set_index('file')
 
-#following manual bit is for purposes of doing it locally
-#filter_array = ['F814W', 'F814W', 'F814W', 'F606W', 'F606W', 'F606W']
+# parse files to find their filter and add to the pandas structure
+for fitsName,row in mainDirectory.iterrows():
+    hdulist = fits.open('raw/'+fitsName)
+    instrument = hdulist[0].header['INSTRUME']
+    if instrument == "WFC3":
+        filter = hdulist[0].header['FILTER']
+    if instrument == "ACS":
+        filter = hdulist[0].header['FILTER1']
+        if filter == "":
+            filter = hdulist[0].header['FILTER2']
+    mainDirectory.set_value(fitsName,'filter',filter)
+    hdulist.close()
 
-#create new array to then modify with V, I, etc.
-filter_array_short = filter_array
+# define a filter translation function
+def filter_translation(filter):
+    if filter in ['F555W','F606W']:
+            return "V"
+    if filter in ['F814W']:
+            return "I"
+    return "indef"
+# and apply it
+mainDirectory['converted'] =mainDirectory.apply(lambda x: filter_translation(x['filter']), axis=1)
 
-for (i, item) in enumerate(filter_array_short):
-    if item == 'F606W' or item == 'F555W':
-        filter_array_short[i] = 'V'
-    if item == 'F814W':
-        filter_array_short[i] = 'I'
-print(filter_array_short)
+# add a counter for the V and I images
+vCounter = 1
+iCounter = 1
+for fitsName,row in mainDirectory.iterrows():
+    if mainDirectory.get_value(fitsName,'converted')=='V':
+        mainDirectory.set_value(fitsName,'index',vCounter)
+        vCounter +=1
+    if mainDirectory.get_value(fitsName,'converted')=='I':
+        mainDirectory.set_value(fitsName,'index',iCounter)
+        iCounter +=1
+mainDirectory['index']=mainDirectory['index'].astype(int)
 
 
 #create text file
@@ -65,56 +72,35 @@ f = open('./reduced/runphot5','w')
 
 #write intro 
 f.write('#!/bin/tcsh\n')
-f.write('setenv BASE $1\nsetenv TARG $2\n')
+#f.write('setenv BASE $1\n')
+f.write('setenv TARG $1\n')
 f.write('setenv DOLPHOT_DIR %s\n' % (dolphotDir))
 
-#get rid of base
-files = [elem[len(base_name):] for elem in files]
-#print file_list
 
 #first paragraph
-count=1
-count2=1
-while (count < 2*num+1):
-	f.write('\ncp ../raw/${BASE}%s ${TARG}_%s%s.fits' % (files[count-1], filter_array[count-1], count2))
-	count=count+1
-	count2=count2+1
-	if count2>num:
-		count2=1
+for fitsfile,row in mainDirectory.iterrows():
+	f.write('\ncp ../raw/%s ${TARG}_%s%d.fits' % (fitsfile,row['converted'],row['index']))
+f.write('\n')
+
+# second paragraph 
+for fitsfile,row in mainDirectory.iterrows():
+ 	if instrument == "ACS":
+ 		f.write('\nnice +19 ${DOLPHOT_DIR}/acsmask ${TARG}_%s%d.fits' % (row['converted'], row['index']))
+ 	if instrument == "WFC3":
+ 		f.write('\nnice +19 ${DOLPHOT_DIR}/wfc3mask ${TARG}_%s%d.fits' % (row['converted'], row['index']))
 
 f.write('\n')
 
-#second paragraph 
-count=1
-count2=1
-while (count < 2*num+1):
-	if instrument == "ACS":
-		f.write('\nnice +19 ${DOLPHOT_DIR}/acsmask ${TARG}_%s%s.fits' % (filter_array[count-1], count2))
-	if instrument == "WFC3":
-		f.write('\nnice +19 ${DOLPHOT_DIR}/wfc3mask ${TARG}_%s%s.fits' % (filter_array[count-1], count2))
-	count=count+1
-	count2=count2+1
-	if count2>num:
-		count2=1
+# third paragraph
+for fitsfile,row in mainDirectory.iterrows():
+ 	f.write('\nnice +19 ${DOLPHOT_DIR}/calcsky ${TARG}_%s%d 15 35 -128 2.25 2.00'% (row['converted'], row['index']))
 
 f.write('\n')
 
-#third paragraph
-count=1
-count2=1
-while (count < 2*num+1):
-	f.write('\nnice +19 ${DOLPHOT_DIR}/calcsky ${TARG}_%s%s 15 35 -128 2.25 2.00'% (filter_array[count-1], count2))
-	count=count+1
-	count2=count2+1
-	if count2>num:
-		count2=1
-
-f.write('\n')
-
-#write end and close
+# write end and close
 if instrument == "ACS":
-	f.write('\n\nnice +19 ${DOLPHOT_DIR}/dolphot ${TARG}.phot -pcphot5.param\n')
+ 	f.write('\n\nnice +19 ${DOLPHOT_DIR}/dolphot ${TARG}.phot -pcphot5.param\n')
 if instrument == "WFC3":
-	f.write('\n\nnice +19 ${DOLPHOT_DIR}/dolphot ${TARG}.phot -pcphotwfc3.param\n')
+ 	f.write('\n\nnice +19 ${DOLPHOT_DIR}/dolphot ${TARG}.phot -pcphotwfc3.param\n')
 #f.write("cat ${TARG}.phot | awk ''$5<=2.5 && $7*$7<=0.09 && $11<=2 && $20>=5 && $24==0 && $33>=5 && $37==0'' > ${TARG}.phot2")
 f.close()
