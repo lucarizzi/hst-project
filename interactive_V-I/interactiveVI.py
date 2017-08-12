@@ -32,13 +32,6 @@ print('Must make selection from top left to bottom right!')
 annotate = Annotate()
 plt.show()
 
-# below doesn't seem to help
-# for i in range(0,100):
-#     ax.clear
-#     plt.show()
-#     time.sleep(1)
-#     annotate = Annotate()
-
 #open up coordinates and save as variables to be used later
 coordinate_file = open('coordinates.txt')
 for line in coordinate_file:
