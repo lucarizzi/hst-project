@@ -1,10 +1,12 @@
 # hst-project
 Note: This file goes over the basic reduction procedure. For more details about individual scripts, see their .readme files on Github (currently being written).
 
-First, obtain the data from MAST (https://archive.stsci.edu/hst/).
-The directory structure should look like:
-ProposalID/GalaxyID/raw/ ->>>raw files go in here
-ProposalID/GalaxyID/reduced/ ->>>cphot/runphot/runfake files go in here
+First, obtain the data from MAST (https://archive.stsci.edu/hst/).The directory structure should look like:  
+
+ProposalID/GalaxyID/raw/ ->>>raw files go in here  
+
+ProposalID/GalaxyID/reduced/ ->>>cphot/runphot/runfake files go in here  
+
 Then, we need to create input files for DOLHPOT:
 -auto_runphot.py will create the necessary runphot file. auto_runphot.py should itself be placed in ProposalID/GalaxyID/auto_runphot.py and ran from there.
 -The cphot file containing the dithering patterns needs to be created manually.
