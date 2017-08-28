@@ -39,7 +39,7 @@ for fitsName,row in mainDirectory.iterrows():
         filter = hdulist[0].header['FILTER']
     if instrument == "ACS":
         filter = hdulist[0].header['FILTER1']
-        if filter == "":
+        if filter == "" or filter == "CLEAR1L":
             filter = hdulist[0].header['FILTER2']
     mainDirectory.set_value(fitsName,'filter',filter)
     hdulist.close()
