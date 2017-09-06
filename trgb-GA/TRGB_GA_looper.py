@@ -35,10 +35,15 @@ while iLoop < 101:
     completeDF = pd.read_csv(completenessFile, delim_whitespace=True, header=0) 
 
     #spatial selection on photoDF - get low & high values from interactive tool
-    xLow  = 0
-    xHigh = 4000
-    yLow  = 0
-    yHigh = 3000
+    coordFile = open('coordinates.txt')
+    for line in coordFile:
+        coords = line.strip().split()
+        xLow = int(coords[0])
+        xHigh = int(coords[1])
+        yHigh = int(coords[2])
+        yLow = int(coords[3])
+    coordFile.close()
+
     photDF = photDF[(photDF['x'] > xLow) & (photDF['x'] < xHigh) 
             & (photDF['y'] > yLow) & (photDF['y'] < yHigh)]
 
