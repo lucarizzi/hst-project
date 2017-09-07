@@ -18,13 +18,15 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 f = open('./TRGB_loopTest_writeout','w')
 
-iLoop=1 
-while iLoop < 101:
-
+iLoop=21
+while iLoop < 51:
     iLoopString = str(iLoop)
 
-    #prefix = input("What is the name of the galaxy?")
-    prefix = 'NGC5128-S1' #for now
+    #edit below parameters
+    prefix = 'NGC5128-S1' 
+    PLT ={'cl' : 1.0, 'ch' : 2.3, 'ml' : 23, 'mh' : 25 }
+
+    #band names
     band1 ='F606W'
     band2 ='F814W'
 
@@ -157,7 +159,7 @@ while iLoop < 101:
     Completeness.set_title("Completeness")
 
     fig.tight_layout()
-    plt.savefig('%sfunctions.ps' %iLoopString, dpi=300, orientation='landscape')
+    #plt.savefig('%sfunctions.ps' %iLoopString, dpi=300, orientation='landscape')
 
 
     # In[ ]:
@@ -169,8 +171,7 @@ while iLoop < 101:
     cmd = plt.figure(figsize=(6,8))
     ax = cmd.add_subplot(1,1,1)
     ax.plot(realV-realI, realI,'o',markersize=1, color='black')
-    # PLT ={'cl' : 1, 'ch' : 2.3, 'ml' : 23, 'mh' : 25 }
-    PLT ={'cl' : 1.0, 'ch' : 2.3, 'ml' : 23, 'mh' : 25 }
+    # PLT ={'cl' : 1.0, 'ch' : 2.3, 'ml' : 23, 'mh' : 25 }
     ax.plot( [ PLT['cl'], PLT['cl']], [PLT['ml'], PLT['mh'] ] , '--', color='red')
     ax.plot( [ PLT['ch'], PLT['ch']], [PLT['ml'], PLT['mh'] ] , '--', color='red')
     ax.plot( [ PLT['cl'], PLT['ch']], [PLT['ml'], PLT['ml'] ] , '--', color='red')
@@ -271,7 +272,7 @@ while iLoop < 101:
     ymin,ymax = LFsmoothplt.get_ylim()
     LFsmoothplt.set_xlim((PLT['ml'],PLT['mh']))
     LFsmoothplt.set_ylim((0,ymax))
-    plt.savefig('%sLFsmooth.ps' %iLoopString, dpi=300)
+    #plt.savefig('%sLFsmooth.ps' %iLoopString, dpi=300)
 
     pmagmax = np.amax(realI) #max(x[1] for x in parr)
     pmagmin = np.amin(realI) #min(x[1] for x in parr)
@@ -381,7 +382,7 @@ while iLoop < 101:
     ax.plot(m,initial_guess,color="green", label='Initial guess')
     ax.plot(m,calculated_function,color='magenta', label='Best fit')
     legend = ax.legend(loc='upper left', fontsize=14)
-    plt.savefig('%slf_fit.ps' %iLoopString, dpi=300)
+    #plt.savefig('%slf_fit.ps' %iLoopString, dpi=300)
 
 
     # In[ ]:
@@ -483,7 +484,7 @@ while iLoop < 101:
     ax.xaxis.set_major_locator(majorLocator)
     ax.xaxis.set_minor_locator(minorLocator) 
     legend = ax.legend(loc='upper left',fontsize=14)
-    plt.savefig('%slf.ps' %iLoopString, dpi=300) 
+    # plt.savefig('%slf.ps' %iLoopString, dpi=300) 
  
     TipColorString    = str(TRGBcolor[0])
     ColorErrorString  = str(color_error)
