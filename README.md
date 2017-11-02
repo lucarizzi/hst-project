@@ -1,7 +1,7 @@
 # hst-project
 Note: This file goes over the basic reduction procedure. For more details about individual scripts, see their .readme files on Github (currently being written).
 
-First, obtain the data from MAST (https://archive.stsci.edu/hst/).The directory structure should look like:  
+First, obtain the data from MAST (https://archive.stsci.edu/hst/). The directory structure should look like:  
 
 ProposalID/GalaxyID/raw/ ->>>raw files go in here  
 ProposalID/GalaxyID/reduced/ ->>>cphot/runphot/runfake files go in here  
