@@ -24,6 +24,6 @@ You may want to apply a spatial selection to the data- to do this, use the inter
 
 Next comes the running of the TRGB notebook (TRGB_GA.ipynb) to get the TRGB magnitude, errors, etc. If you want to apply a spatial selection, uncomment the relevant section in the second cell of the notebook and insert the coordinates obtained from the spatial selection tool. You can then run the notebook one cell at a time, or the entire thing at once.  
 
--One important parameter is the binning parameter (found in the fifth cell, (xi = np.linspace(min(X),max(X),5)). The last number there is the relevant parameter. Most values give the same result, with some hiccups (usually if it is set too low or too high). A good starting point is ~30. If this is giving you difficulties, you may decide to run the TRGB_GA_looper.py file, which tries all values from 1-100 and outputs the relevant values and errors to a text file. Currently it also prints plots for each one of them, so disable those if you are not interested in those yet (probably a good idea).  
+-One important thing to make sure things go smoothly is to adjust the location of the dolphot installation in all the input files manually- the automatic detection of the correct location is currently bugged. 
 
 And that should be it! (for now...)
