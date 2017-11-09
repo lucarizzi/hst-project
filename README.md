@@ -13,7 +13,7 @@ Then, we need to create input files for DOLHPOT:
 -runfake2.0 can be copied over from any other galaxy directory.  
 
 Run the photometry and complete completeness simulations within DOLPHOT from the command line:  
--To run the photometry, do the following from within ../reduced/ (this is an example, items in parenthesis give description of what to input): ./runphot5 jcwk0(BASE) ngc5128-s1(TARGET)  
+-To run the photometry, do the following from within ../reduced/ (this is an example, items in parenthesis give description of what to input): ./runphot5 ngc5128-s1(TARGET)  
 -To run the completeness simulations from within ../reduced/ (this is an example, items in parenthesis give description of what to input): nohup ./runfake CENA-132557(TARGET)  
 
 You should now have many files within ../reduced. The ones we care about (right now) are GalaxyID.phot and GalaxyID.phot.fake. Bring these files out to a separate working directory (currently I am doing the rest of the work on my own computer, but ideally this would be done in ProposalID/GalaxyID/TRGB/ or something similar).  
