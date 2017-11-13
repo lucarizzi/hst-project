@@ -20,7 +20,7 @@ You should now have many files within ../reduced. The ones we care about (right 
 
 In /TRGB/, along with the two photometry files, make sure you have both_phot_reader.ipynb (Github), which reads in the photometry and completeness files and returns two files that have certain photometric criterion applied, as well as column headers added (they will be named GalaxyID.phot2 and GalaxyID.phot.fake2).  
 
-You may want to apply a spatial selection to the data- to do this, use the interactiveVI.ipynb (note this is under construction and runs a bit slow through Jupyter- for now, please use the regular .py script). The coordinates will be saved in a text file.  
+You may want to apply a spatial selection to the data- to do this, use the interactive.py script (note that you must have the annotate module within the same directory as well). The coordinates will be saved in a text file.  
 
 Next comes the running of the TRGB notebook (TRGB_GA.ipynb) to get the TRGB magnitude, errors, etc. If you want to apply a spatial selection, uncomment the relevant section in the second cell of the notebook and insert the coordinates obtained from the spatial selection tool. You can then run the notebook one cell at a time, or the entire thing at once.  
 
