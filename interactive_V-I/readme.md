@@ -9,7 +9,11 @@ You can reselect as many times as you want until you are happy with your selecti
 
 
 Important Notes:
+
 -Make sure you have annotate.py in your directory.
+
 -The coordinates.txt file is rewritten with every selection, so make sure you double-check the contents of that file before proceeding with your analysis.
+
 -Make sure to select from top-left to bottom-right!
+
 -I am currently working on updating this to a free-form selection tool. 
