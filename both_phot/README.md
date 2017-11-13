@@ -1,1 +1,0 @@
-both_phot is 
